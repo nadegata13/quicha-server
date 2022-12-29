@@ -1,0 +1,35 @@
+version: '3'
+
+services: 
+  server:
+    build: ./server
+    container_name: "server"
+    ports:
+      - 8080:8080
+    links: 
+      - mongo
+    depends_on: 
+      - mongo
+    volumes: 
+      - ./server:/server
+      - /home/app/nodeapp/node_modules
+
+  mongo:
+    image: mongo
+    container_name: "mongo"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: takashi
+      MONGO_INITDB_ROOT_PASSWORD: jugemujugemugokounosurikire3827382722153929
+    command: 
+      - mongod
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+
+  mongo-data:
+    image: busybox
+
+volumes: 
+  mongo-data:
+
