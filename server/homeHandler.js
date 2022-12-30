@@ -4,8 +4,12 @@ module.exports = (io, socket, User) => {
             if(error) {
                 console.log(error)
             } else {
-                const icon = result.icon;
-                socket.emit("passAccountInfo", icon);
+                const _icon = result.icon;
+                const _nickname = result.nickname;
+                socket.emit("passAccountInfo", {
+                    icon: _icon,
+                    nickname: _nickname
+                });
 
                 console.log("success passAccountInfo");
             }

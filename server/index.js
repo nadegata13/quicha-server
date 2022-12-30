@@ -36,9 +36,9 @@ mongoose.connect(dburl, connectOption).then(
 
 
     /**
-     * 新規ユーザースキーマー
+     * 新規ユーザースキーマ
      */
-    var userSchema = new mongoose.Schema({
+    const userSchema = new mongoose.Schema({
       userID: String,
       nickname: String,
       icon: Number,
@@ -47,7 +47,54 @@ mongoose.connect(dburl, connectOption).then(
       collection: 'users'  // コレクション名
     });
 
-    var User = mongoose.model('user', userSchema);
+    const User = mongoose.model('user', userSchema);
+
+    /**
+     * 管理用ユーザースキーマ
+     */
+
+    const userForMngSchema = new mongoose.Schema({
+      userID: String,
+      createAt: String,
+      roomHistory: [{
+        roomID: String,
+        enterAt: String
+      }],
+      violationHistory: [
+        {
+          violationDate: String,
+          violationMessage: String
+        }
+      ]
+    });
+    const userForMng = mongoose.model('userForMng', userForMngSchema);
+
+    /**
+     * 通知用スキーマ
+     */
+    const notificationSchema = new mongoose.Schema({
+      userID: String,
+      lifeCount: Number,
+      lifeUpdate: String,
+      messageForUser: {
+        messageID: mongoose.Schema.Types.ObjectId,
+        message: String
+      }
+    });
+    const notification = mongoose.model("notification", notificationSchema);
+
+    /**
+     * BAN用スキーマ
+     */
+    const bannedUserSchema = new mongoose.Schema({
+      userID: String,
+      terminalID: String,
+      unbanDate: String
+    });
+    const bannedUser = mongoose.model('bannedUser', bannedUserSchema);
+
+    
+
 
 /**
  * socket接続
