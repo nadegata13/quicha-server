@@ -60,14 +60,10 @@ mongoose.connect(dburl, connectOption).then(
         roomID: String,
         enterAt: String
       }],
-      violationHistory: [
-        {
-          violationDate: String,
-          violationMessage: String
-        }
-      ]
+    }, {
+      collection: "userForManagement"
     });
-    const userForMng = mongoose.model('userForMng', userForMngSchema);
+    const UserForMng = mongoose.model('userForMng', userForMngSchema);
 
     /**
      * 通知用スキーマ
@@ -76,12 +72,16 @@ mongoose.connect(dburl, connectOption).then(
       userID: String,
       lifeCount: Number,
       lifeUpdate: String,
-      messageForUser: {
+      messageForUser: [
+        {
         messageID: mongoose.Schema.Types.ObjectId,
         message: String
       }
+      ]
+    },{
+      collection: "notification"
     });
-    const notification = mongoose.model("notification", notificationSchema);
+    const Notification = mongoose.model("notification", notificationSchema);
 
     /**
      * BAN用スキーマ
@@ -89,9 +89,17 @@ mongoose.connect(dburl, connectOption).then(
     const bannedUserSchema = new mongoose.Schema({
       userID: String,
       terminalID: String,
+      violationHistory: [
+        {
+          violationDate: String,
+          violationMessage: String
+        }
+      ],
       unbanDate: String
+    },{
+      collection: "bannedUser"
     });
-    const bannedUser = mongoose.model('bannedUser', bannedUserSchema);
+    const BannedUser = mongoose.model('bannedUser', bannedUserSchema);
 
     
 
@@ -113,8 +121,9 @@ io.on('connection', (socket) => {
 
   /**
    * 新規アカウントをデータベース上に保存
+   * 4つのコレクションに保存
    */
-  require("./createAccountHandler.js")(io,socket,User);
+  require("./createAccountHandler.js")(io,socket,User, UserForMng, Notification, BannedUser);
 
   /**
    * ホーム画面に対するイベントハンドラ

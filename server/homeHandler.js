@@ -1,6 +1,6 @@
 module.exports = (io, socket, User) => {
     socket.on("queryAccountInfo", (uid)=> {
-        User.findOne({UserID : uid}, function(error, result) {
+         User.findOne({userID : uid}, function(error, result) {
             if(error) {
                 console.log(error)
             } else {
@@ -11,6 +11,8 @@ module.exports = (io, socket, User) => {
                     nickname: _nickname
                 });
 
+                console.log(uid);
+                console.log(result);
                 console.log("success passAccountInfo");
             }
         });

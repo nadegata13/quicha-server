@@ -72,7 +72,7 @@ module.exports = (io, socket) => {
     });
 
     function getDate() {
-        let now = new Date();
+        let now = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
 
         let year = now.getFullYear().toString();
         let month = (now.getMonth() + 1).toString();
