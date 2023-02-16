@@ -56,6 +56,7 @@ mongoose.connect(dburl, connectOption).then(
     const userForMngSchema = new mongoose.Schema({
       userID: String,
       createAt: String,
+      terminalID: String,
       roomHistory: [{
         roomID: String,
         enterAt: String
@@ -100,8 +101,28 @@ mongoose.connect(dburl, connectOption).then(
       collection: "bannedUser"
     });
     const BannedUser = mongoose.model('bannedUser', bannedUserSchema);
-
-    
+    /**
+     * クイズ用スキーマ
+     */
+    const quizSchema = new mongoose.Schema({
+      quizID: String,
+      quizItems: [
+        {
+          item: String,
+          type: Number,
+        }
+      ],
+      answer: String,
+      hint: String,
+      category: String,
+      quizCount: Number,
+      correctCount: Number,
+      difficulty: Number,
+      createUserID: String
+    }, {
+      collection: "quizes"
+    });
+    const Quizes = mongoose.model('quizes', quizSchema);
 
 
 /**
@@ -116,7 +137,7 @@ io.on('connection', (socket) => {
   /**
    * マッチング中のイベントハンドラー
    */
-  require("./matchingHandler.js")(io, socket);
+  require("./matchingHandler.js")(io, socket, User);
 
 
   /**
@@ -128,7 +149,12 @@ io.on('connection', (socket) => {
   /**
    * ホーム画面に対するイベントハンドラ
    */
-  require("./homeHandler.js")(io, socket, User);
+  require("./homeHandler.js")(io, socket, User, Notification);
+
+  /**
+   * チャットルーム画面に対するイベントハンドラ
+   */
+  require("./chatRoomHandler.js")(io,socket,Quizes);
 
 });
 

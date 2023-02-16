@@ -1,5 +1,8 @@
+
 module.exports = (io, socket, User, UserForMng, Notification, BannedUser) => {
 
+
+                var dateHandler = require('./dateHandler.js');
 
     socket.on("createNewAccount", ({ newUserID, newNickname, newIcon, deviceID }) => {
 
@@ -22,10 +25,14 @@ module.exports = (io, socket, User, UserForMng, Notification, BannedUser) => {
                     icon: newIcon,
                     iconUrl: "http://localhost:8080/anonymous.png"
                 });
+
+
+
                 //管理用ユーザー情報
                 const userForMngInfo = UserForMng({
                     userID: newUserID,
-                    createAt: getDate(),
+                    terminalID: deviceID,
+                    createAt: dateHandler.getNowDate(),
                     roomHisotry: [],
                 });
 
@@ -33,7 +40,7 @@ module.exports = (io, socket, User, UserForMng, Notification, BannedUser) => {
                 const notificationInstance = Notification({
                     userID: newUserID,
                     lifeCount: 5,
-                    lifeUpdate: dateToString(new Date(2000,1)),
+                    lifeUpdate: dateHandler.getCustomDate(new Date(2000,1)),
                     messageForUser: []
                 });
 
@@ -43,7 +50,7 @@ module.exports = (io, socket, User, UserForMng, Notification, BannedUser) => {
                     userID: newUserID,
                     terminalID: deviceID,
                     violationHistory: [],
-                    unbanDate: dateToString(new Date(2000,1))
+                    unbanDate: dateHandler.getCustomDate(new Date(2000,1))
                 });
 
                 //ユーザー情報を保存
