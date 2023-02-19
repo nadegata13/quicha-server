@@ -93,6 +93,27 @@ module.exports = (io, socket, User, UserForMng, Notification, BannedUser) => {
             }
         });
     });
+    socket.on("testdayo", ()=> {
+        console.log("testdayo");
+
+    });
+    socket.on("checkRegisteredUser", ( newUserID ) => {
+
+        console.log("checkAlreadyUser");
+
+        var resultCode = -1;
+
+        User.findOne({ userID: newUserID }, function (err, result) {
+            if (result) {
+                resultCode = 300;
+                socket.emit("goToScreen", resultCode);
+            } else {
+                resultCode = 200;
+                socket.emit("goToScreen", resultCode);
+                
+            }
+        });
+    });
 
     function getDate() {
         let now = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
