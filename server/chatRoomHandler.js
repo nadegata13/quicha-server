@@ -1,5 +1,5 @@
 
-module.exports = (io, socket, Quizes ) => {
+module.exports = (io, socket, Quizes,Notification ) => {
     //送信メッセージ
 socket.on("sendMessage", ({sendUserID, sendMessage}) => {
     io.to([...socket.rooms][1]).emit("receiveMessage",  {
@@ -39,7 +39,44 @@ socket.on("showQuizAnswer", (answer)=> {
     });
 });
 
+socket.on("giveCorrectAnswer", () => {
+                socket.broadcast.to([...socket.rooms][1]).emit("isCorrectTrue");
+});
+
+socket.on("decreaseLife", (_userID) => {
+
+                Notification.findOne({userID : _userID}, function(error, notification){
+                    if(!notification){
+                    } else {
+
+                //アイコン
+                //ニックネーム
+                //ライフ
+                const _lifeCount = notification.lifeCount - 1; 
+                //ライフ変更時間 
+                const _lifeUpdate = notification.lifeUpdate;
+                        var dateHandler = require("./dateHandler.js");
+                const now = dateHandler.getNowDate();
+
+        Notification.findOneAndUpdate({userID: _userID}, {lifeCount: _lifeCount, lifeUpdate : now }, function(error, result){
+            if(result){
+                console.log("decreasedLife");
+            }
+        });
+
+                    }
+
+                });
+});
+
     socket.on("leaveChatRoom", () => {
+
+    io.to([...socket.rooms][1]).emit("receiveMessage",  {
+        userID : "BOT",
+        receivedMessage: "1名が退室しました。"
+    });
+    io.to([...socket.rooms][1]).emit("leavedMember");
+
         console.log("抜ける前" + Array.from(socket.rooms));
         console.log("抜ける前" + [...socket.rooms][1]);
         socket.leave([...socket.rooms][1]);

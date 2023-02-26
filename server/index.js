@@ -154,7 +154,7 @@ io.on('connection', (socket) => {
   /**
    * チャットルーム画面に対するイベントハンドラ
    */
-  require("./chatRoomHandler.js")(io,socket,Quizes);
+  require("./chatRoomHandler.js")(io,socket,Quizes, Notification);
 
 });
 
